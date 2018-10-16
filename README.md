@@ -1,5 +1,5 @@
-# Bipartite-Tools
-A tool for testing community detection algorithms on bipartite projected networks.
+# edge2evc
+The open source code for our edge2vec paper.
 
 To install on Linux run:
 
@@ -59,22 +59,14 @@ $ bipnet/Benchmark.py -i examples/config_benchmark.cfg -o bipartite.net --noise 
 
 if you use the code, please cite:
 
-- Bongiorno, Christian; London, András; Miccichè, Salvatore and Mantegna, Rosario N. "Core of communities in bipartite networks", *Physical review E* 96.2 (2017): 022321.
- 
-- Tumminello, Michele; Micciche, Salvatore; Lillo, Fabrizio, Piilo, Jyrki and Mantegna, Rosario N.  "Statistically validated networks in bipartite complex systems". *PloS one*, 6.3 (2011):e17994.
-
-- Blondel, V. D.; Guillaume, J. L.; Lambiotte, R. and Lefebvre, E. "Fast unfolding of communities in large networks". *Journal of statistical mechanics: theory and experiment*,  2008.10 (2008): P10008.
+- Gao, Zheng, Gang Fu, Chunping Ouyang, Satoshi Tsutsui, Xiaozhong Liu, and Ying Ding. "edge2vec: Learning Node Representation Using Edge Semantics." arXiv preprint arXiv:1809.02269 (2018).
 
 ## License
 The code is released under GNU license. 
 
 
-## Authors
+## Contributor
 
-* **Christian Bongiorno** - [pvofeta@gmail.com](pvofeta@gmail.com) <br />
+* **Zheng Gao** - [gao27@indiana.edu](gao27@indiana.edu) <br />
 
-See also the list of contributors:<br />
-Andras London [andraslondon@gmail.com](andraslondon@gmail.com) <br />
-Salvatore Miccichè [salvatore.micciche@unipa.it](salvatore.micciche@unipa.it) <br /> 
-Rosario N Mantegna [rn.mantegna@gmail.com](rn.mantegna@gmail.com)
 

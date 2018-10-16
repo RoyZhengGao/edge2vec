@@ -1,30 +1,6 @@
 # edge2evc
 The open source code for our edge2vec paper.
 
-To install on Linux run:
-
-```
-$ sudo ./INSTALL
-```
-
-It is possible to use it as a python library:
-
-```
-import bipnet
-```
-
-or call the python code from bash, without install it. The code was tested only on Linux.
-
-The module validate contains the functions for statistically validated networks. The module metrics contains other useful functions (for ex. the AWI). The code includes a wrapper to the louvain community detection method written by E. Lefebvre and released under GNU Licence. The louvain code is available separately [here](https://sourceforge.net/projects/louvain/)
-
-## Dependencies
-
-To install the dependencies un from bash
-
-```
-$ sudo pip install numpy pandas python-igraph matplotlib scipy
-```
-
 ## How to use the code
 
 ### Statistical Validation

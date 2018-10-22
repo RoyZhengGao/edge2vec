@@ -1,5 +1,5 @@
 # edge2evc
-The open source code for our paper: edge2vec: Learning Node Representation Using Edge Semantics.
+The open source code for our paper "edge2vec: Learning Node Representation Using Edge Semantics".
 
 ## How to use the code
 

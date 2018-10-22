@@ -4,22 +4,24 @@ The open source code for our edge2vec paper.
 ## How to use the code
 
 ### Dataset
-The dataset we offer here is toy dataset, which is stored in the folder data.
+The dataset we offer for test is data.csv. The data contains four columns, which refer to Source ID, Target ID, Edge Type, Edge ID. And columns are seperated by comma ','.
 
 ### Run the code
-In the folder code there is the transition.py to calculate transition matrix in heterogeneous networks. To use it from bash:
+There are two steps for running the code. 
+First, to calculate transition matrix in heterogeneous networks. run transition.py from bash:
 
 ```
-$ bipnet/Validate.py -i examples/bipartite_input.net -o proj.net --side 0 --thr 0.01
+$ transition.py --input data.csv --output matrix --type_size 3 --em_iteration 5 --e_step 3 --walk-length 3 --num-walks 2
 ```
 
-edge2vec.py generates the node embeddings via biased random walk. To use it from bash:
+The output is matrix.txt which stores edge transition matrix.
+Second, run edge2vec.py to the node embeddings via biased random walk. To use it from bash:
 
 ```
-$ bipnet/Validate.py -i examples/bipartite_input.net -o proj.net --side 0 --thr 0.01
+$ edge2vec.py --input data.csv --matrix matrix.txt --output vector.txt --dimensions 128 --walk-length 3 --num-walks 2 --p 1 --q 1
 ```
 
-the option --side can assume value 0 or 1. If it is zero it will projected with respect to the first column, otherwise it will projected with respect the second column. The option --thr is the significance level of the statistical validation. It is suggested to use 0.01.
+The output is the node embedding file vector.txt.
 
 ## Citations
 

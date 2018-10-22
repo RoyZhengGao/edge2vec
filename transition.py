@@ -16,7 +16,7 @@ def parse_args():
     '''
     parser = argparse.ArgumentParser(description="Run edge transition matrix.") 
 
-    parser.add_argument('--input', nargs='?', default='/Users/gaozheng/Dropbox/research/sigir_work_with_ding_ying_group/toy_example/toy_example2/sample_graph2.csv',
+    parser.add_argument('--input', nargs='?', default='data.csv',
                         help='Input graph path')
 
     parser.add_argument('--output', nargs='?', default='matrix.txt',

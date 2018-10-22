@@ -11,7 +11,7 @@ There are two steps for running the code.
 First, to calculate transition matrix in heterogeneous networks. run transition.py from bash:
 
 ```
-$ transition.py --input data.csv --output matrix --type_size 3 --em_iteration 5 --e_step 3 --walk-length 3 --num-walks 2
+$ transition.py --input data.csv --output matrix.txt --type_size 3 --em_iteration 5 --e_step 3 --walk-length 3 --num-walks 2
 ```
 
 The output is matrix.txt which stores edge transition matrix.

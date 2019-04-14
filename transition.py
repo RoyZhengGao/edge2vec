@@ -85,12 +85,18 @@ def read_graph(edgeList,weighted=False, directed=False):
     return G
  
 def initialize_edge_type_matrix(type_num):
+    '''
+    initialize a transition matrix with equal values
+    '''
     initialized_val = 1.0/(type_num*type_num)
     matrix = [ [ initialized_val for i in range(type_num) ] for j in range(type_num) ]
     return matrix
 
 
 def simulate_walks(G, num_walks, walk_length,matrix):
+    '''
+    generate random walk paths constrainted by transition matrix
+    '''
     walks = []
     links = list(G.edges(data = True))
     print 'Walk iteration:'
@@ -107,6 +113,9 @@ def simulate_walks(G, num_walks, walk_length,matrix):
     return walks
 
 def edge2vec_walk(G, walk_length, start_link,matrix): 
+    '''
+    return a random walk path
+    '''
     # print "start link: ", type(start_link), start_link
     walk = [start_link] 
     result = [str(start_link[2]['type'])]
@@ -217,10 +226,11 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
     # print "path: ",result
     return result  
 
-'''
-E step, update transition matrix
-'''
+
 def update_trans_matrix(walks,type_size,evaluation_metric):
+    '''
+    E step, update transition matrix
+    '''
     #here need to use list of list to store all edge type numbers and use KL divergence to update
     matrix = [ [ 0 for i in range(type_size) ] for j in range(type_size) ]
     repo = dict()
@@ -265,6 +275,9 @@ def update_trans_matrix(walks,type_size,evaluation_metric):
 
     return matrix
 
+'''
+different ways to calculate correlation between edge-types
+'''
 #pairwised judgement
 def wilcoxon_test(v1,v2):# original metric: the smaller the more similar 
     result = stats.wilcoxon(v1, v2).statistic

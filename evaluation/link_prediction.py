@@ -28,11 +28,17 @@ def parse_args():
 
 
 def load_word2vec_model(file):
+    '''
+    return node embedding model
+    '''
     model = KeyedVectors.load_word2vec_format(file , binary=False)
     # print model.wv["1"]
     return model
 
 def load_ground_truth(model,ground_truth_file,threshold): 
+    '''
+    load ground truth model
+    '''
     true_label = []
     predicted_label = []
     with open(ground_truth_file) as f:
@@ -52,6 +58,9 @@ def load_ground_truth(model,ground_truth_file,threshold):
     return true_label,predicted_label
 
 def evaluation_analysis(true_label,predicted): 
+    '''
+    return all metrics results
+    '''
     print "accuracy",metrics.accuracy_score(true_label, predicted)
     print "f1 score macro",metrics.f1_score(true_label, predicted, average='macro')     
     print "f1 score micro",metrics.f1_score(true_label, predicted, average='micro') 
@@ -66,12 +75,18 @@ def evaluation_analysis(true_label,predicted):
     print "matthews_corrcoef", metrics.matthews_corrcoef(true_label, predicted)
 
 def correlation_analysis(v1,v2):
+    '''
+    calculated three correlation score between two lists
+    '''
 	print "spearman correlation:",str(stats.mstats.spearmanr(v1,v2).correlation)
 	print "pearsonr correlation:",str(stats.mstats.pearsonr(v1,v2)[0])
 	print "cosine correlation:",1 - spatial.distance.cosine(v1, v2) 
 
 
 def logit_regression(model,ground_truth_file):
+    '''
+    return logistic regression all evaluation metrics
+    '''
     label = dict()
     # true_label = []
     # instance = []
@@ -158,6 +173,22 @@ def logit_regression(model,ground_truth_file):
     # print "log_loss", metrics.log_loss(data_Y, predicted)
     print "zero_one_loss", metrics.zero_one_loss(data_Y, predicted)
     # return true_label,predicted_label
+
+def calculate_roc(y_true,y_pred):
+    '''
+    calculate AUROC score
+    '''
+    auroc = roc_auc_score(y_true, y_pred)
+    return auroc
+
+def plot_roc(true,pred):
+    '''
+    plot the ROC curve
+    '''
+    fpr, tpr, thresholds = metrics.roc_curve(true, pred, pos_label=1)
+    plt.plot(fpr, tpr,c = "blue",markersize=2,label='edge2vec')
+    plt.show()
+
 if __name__ == "__main__":
     args = parse_args()
     word2vec_model = load_word2vec_model(args.vector_file)

@@ -79,11 +79,17 @@ def read_graph(edgeList,weighted=False, directed=False):
     return G
  
 def read_edge_type_matrix(file):
+    '''
+    load transition matrix
+    '''
     matrix = np.loadtxt(file, delimiter=' ')
     return matrix
 
 
 def simulate_walks(G, num_walks, walk_length,matrix,p,q):
+    '''
+    generate random walk paths constrainted by transition matrix
+    '''
     walks = []
     nodes = list(G.nodes())
     print 'Walk iteration:'
@@ -97,6 +103,9 @@ def simulate_walks(G, num_walks, walk_length,matrix,p,q):
 
 def edge2vec_walk(G, walk_length, start_node,matrix,p,q): 
     # print "start node: ", type(start_node), start_node
+    '''
+    return a random walk path
+    '''
     walk = [start_node]  
     while len(walk) < walk_length:# here we may need to consider some dead end issues
         cur = walk[-1]

@@ -20,11 +20,17 @@ def parse_args():
     return parser.parse_args()
 
 def load_word2vec_model(file):
+    '''
+    load node embedding model
+    '''
     model = KeyedVectors.load_word2vec_format(file , binary=False)
     # print model.wv["1"]
     return model
 
 def sample_equal_instance(ground_truth_file):
+    '''
+    sample equal instance from the ground truth file
+    '''
     label = dict()
     with open(ground_truth_file) as f:
         for line in f:
@@ -54,6 +60,9 @@ def sample_equal_instance(ground_truth_file):
     return new_label
 
 def data_reshape(model,label):
+    '''
+    reshape the data frame
+    '''
     data_X = []
     data_Y = []
     for k,v in label.iteritems(): 
@@ -64,6 +73,10 @@ def data_reshape(model,label):
     data_Y = np.asarray(data_Y)
     return data_X,data_Y
 def multi_class_classification(data_X,data_Y):
+    '''
+    calculate multi-class classification and return related evaluation metrics
+    '''
+
     svc = svm.SVC(C=1, kernel='linear')
     # X_train, X_test, y_train, y_test = train_test_split( data_X, data_Y, test_size=0.4, random_state=0) 
     clf = svc.fit(data_X, data_Y) #svm

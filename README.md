@@ -22,7 +22,7 @@ $ edge2vec.py --input data.csv --matrix matrix.txt --output vector.txt --dimensi
 ```
 
 The output is the node embedding file vector.txt.
-Data repository for medical dataset in the paper: http://ella.ils.indiana.edu/~gao27/data_repo/edge2vec vector.zip
+Data repository for medical dataset in the link: http://ella.ils.indiana.edu/~gao27/data_repo/edge2vec vector.zip
 ## Citations
 
 if you use the code, please cite:
@@ -30,7 +30,7 @@ if you use the code, please cite:
 - Gao, Zheng, Gang Fu, Chunping Ouyang, Satoshi Tsutsui, Xiaozhong Liu, and Ying Ding. "edge2vec: Learning Node Representation Using Edge Semantics." arXiv preprint arXiv:1809.02269 (2018).
 
 ## License
-The code is released under GNU license. 
+The code is released under BSD 3-Clause License. 
 
 
 ## Contributor

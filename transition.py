@@ -133,8 +133,9 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
         '''
         consider the hub nodes and reduce the hub influence
         '''
-        start_direction = 0
-        end_direction = 0
+        # set up two small values to aviod zero
+        start_direction = 0.00001
+        end_direction = 0.00001
         if G.degree(start_node) > 1:
             start_direction = 1.0/G.degree(start_node)
         if G.degree(end_node) > 1: 

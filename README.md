@@ -22,7 +22,7 @@ $ edge2vec.py --input data.csv --matrix matrix.txt --output vector.txt --dimensi
 ```
 
 The output is the node embedding file vector.txt.
-Data repository for medical dataset in the link: http://ella.ils.indiana.edu/~gao27/data_repo/edge2vec vector.zip
+Data repository for medical dataset in the link: http://ella.ils.indiana.edu/~gao27/data_repo/edge2vec%20vector.zip
 ## Citations
 
 if you use the code, please cite:

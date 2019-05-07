@@ -55,14 +55,16 @@ def parse_args():
     parser.add_argument('--q', type=float, default=1,
                         help='Inout hyperparameter. Default is 1.')
 
+    #dest='weighted' means the arg parameter name is weighted.
+    # There is only one parameter: args.weighted
     parser.add_argument('--weighted', dest='weighted', action='store_true',
-                        help='Boolean specifying (un)weighted. Default is unweighted.')
-    parser.add_argument('--unweighted', dest='unweighted', action='store_false')
+                        help='Boolean specifying (un)weighted. Default is unweighted.') 
+    parser.add_argument('--unweighted', dest='weighted', action='store_false')
     parser.set_defaults(weighted=False)
 
     parser.add_argument('--directed', dest='directed', action='store_true',
                         help='Graph is (un)directed. Default is undirected.')
-    parser.add_argument('--undirected', dest='undirected', action='store_false')
+    parser.add_argument('--undirected', dest='directed', action='store_false')
     parser.set_defaults(directed=False)
 
     return parser.parse_args()
@@ -72,11 +74,11 @@ def read_graph(edgeList,weighted=False, directed=False):
     Reads the input network in networkx.
     '''
     if weighted:
-        G = nx.read_edgelist(edgeList, nodetype=str, data=(('type',int),('id',int)), create_using=nx.DiGraph())
+        G = nx.read_edgelist(edgeList, nodetype=str, data=(('type',int),('weight',float),('id',int)), create_using=nx.DiGraph())
     else:
         G = nx.read_edgelist(edgeList, nodetype=str,data=(('type',int),('id',int)), create_using=nx.DiGraph())
         for edge in G.edges():
-            G[edge[0]][edge[1]]['weight'] = 1
+            G[edge[0]][edge[1]]['weight'] = 1.0
 
     if not directed:
         G = G.to_undirected()
@@ -93,7 +95,7 @@ def initialize_edge_type_matrix(type_num):
     return matrix
 
 
-def simulate_walks(G, num_walks, walk_length,matrix):
+def simulate_walks(G, num_walks, walk_length,matrix,is_directed,p,q):
     '''
     generate random walk paths constrainted by transition matrix
     '''
@@ -106,13 +108,13 @@ def simulate_walks(G, num_walks, walk_length,matrix):
         count = 1000
         for link in links:
             # print "chosen link id: ",link[2]['id']
-            walks.append(edge2vec_walk(G, walk_length, link,matrix)) 
+            walks.append(edge2vec_walk(G, walk_length, link,matrix,is_directed,p,q)) 
             count = count - 1
             if count == 0 and len(links)>1000:#control the pairwise list length
                 break
     return walks
 
-def edge2vec_walk(G, walk_length, start_link,matrix): 
+def edge2vec_walk(G, walk_length, start_link,matrix,is_directed,p,q): 
     '''
     return a random walk path
     '''
@@ -133,29 +135,28 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
         '''
         consider the hub nodes and reduce the hub influence
         '''
-        # set up two small values to aviod zero
-        start_direction = 0.00001
-        end_direction = 0.00001
-        if G.degree(start_node) > 1:
-            start_direction = 1.0/G.degree(start_node)
-        if G.degree(end_node) > 1: 
-            end_direction = 1.0/G.degree(end_node)
-        prob = start_direction/(start_direction+end_direction)
-        # print "start node: ", start_node, " degree: ", G.degree(start_node)
-        # print "end node: ", end_node, " degree: ", G.degree(end_node)
-
-        # print cur[0], cur[1]
-        rand = np.random.rand() 
-        # print "random number ",rand
-        # print "probability for start node: ",prob
-
-        if prob >= rand:
-            # print "yes"
-            direction_node = start_node
-            left_node = end_node
-        else:
+        if is_directed: # directed graph has random walk direction already
             direction_node = end_node
             left_node = start_node
+        else:# for undirected graph, first consider the random walk direction by choosing the start node
+            start_direction = 1.0/G.degree(start_node)
+            end_direction = 1.0/G.degree(end_node)
+            prob = start_direction/(start_direction+end_direction)
+            # print "start node: ", start_node, " degree: ", G.degree(start_node)
+            # print "end node: ", end_node, " degree: ", G.degree(end_node)
+
+            # print cur[0], cur[1]
+            rand = np.random.rand() 
+            # print "random number ",rand
+            # print "probability for start node: ",prob
+
+            if prob >= rand:
+                # print "yes"
+                direction_node = start_node
+                left_node = end_node
+            else:
+                direction_node = end_node
+                left_node = start_node
         # print "directed node: ",direction_node
         # print "left_node node: ",left_node
         '''
@@ -170,18 +171,18 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
         distance_sum = 0
         for neighbor in neighbors:
             # print "neighbors:", neighbor
-            neighbor_link = G[neighbor][direction_node]#get candidate link's type
+            neighbor_link = G[direction_node][neighbor]#get candidate link's type
             # print "neighbor_link: ",neighbor_link
             neighbor_link_type = neighbor_link['type']
             # print "neighbor_link_type: ",neighbor_link_type
+            neighbor_link_weight = neighbor_link['weight']
             trans_weight = matrix[cur_edge_type-1][neighbor_link_type-1]
-            if G.has_edge(neighbor,left_node):#undirected graph
-                
-                distance_sum += trans_weight*1.0/(1+1) #+1 normalization
-            # elif neighbor == left_node: #decide whether it can random walk back
-            #     distance_sum += 1.0/(0+1)
+            if G.has_edge(neighbor,left_node) or G.has_edge(left_node,neighbor): 
+                distance_sum += trans_weight*neighbor_link_weight/p  
+            elif neighbor == left_node: #decide whether it can random walk back
+                distance_sum += trans_weight*neighbor_link_weight
             else:
-                distance_sum += trans_weight*1.0/(1+2)
+                distance_sum += trans_weight*neighbor_link_weight/q
 
         '''
         pick up the next step link
@@ -193,18 +194,22 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
         neighbors2 = G.neighbors(direction_node) 
         for neighbor in neighbors2:
             # print "current threshold: ", threshold
-            neighbor_link = G[neighbor][direction_node]#get candidate link's type
+            neighbor_link = G[direction_node][neighbor]#get candidate link's type
             neighbor_link_type = neighbor_link['type']
+            neighbor_link_weight = neighbor_link['weight']
             trans_weight = matrix[cur_edge_type-1][neighbor_link_type-1]
-            if G.has_edge(neighbor,left_node):#undirected graph
-                threshold += trans_weight*1.0/(1+1) #+1 normalization
+            if G.has_edge(neighbor,left_node) or G.has_edge(left_node,neighbor): 
+                threshold += trans_weight*neighbor_link_weight/p
                 if threshold >= rand:
                     next_link_end_node = neighbor
                     break;
-            # elif neighbor == left_node:
-            #     distance_sum += 1.0/(0+1)
+            elif neighbor == left_node:
+                threshold += trans_weight*neighbor_link_weight
+                if threshold >= rand:
+                    next_link_end_node = neighbor
+                    break;
             else:
-                threshold += trans_weight*1.0/(1+2)
+                threshold += trans_weight*neighbor_link_weight/q
                 if threshold >= rand:
                     next_link_end_node = neighbor
                     break;
@@ -212,18 +217,22 @@ def edge2vec_walk(G, walk_length, start_link,matrix):
         # print "distance_sum: ",distance_sum
         # print "rand: ", rand, " threshold: ", threshold
         # print "next_link_end_node: ",next_link_end_node
-        next_link = G[direction_node][next_link_end_node]
-        # next_link = G.get_edge_data(direction_node,next_link_end_node)
-        
-        next_link_tuple = tuple()
-        next_link_tuple += (direction_node,)
-        next_link_tuple += (next_link_end_node,)
-        next_link_tuple += (next_link,)
-        # print type(next_link_tuple)
-        # print next_link_tuple
-        walk.append(next_link_tuple)
-        result.append(str(next_link_tuple[2]['type']))
-        # print "walk length: ",len(walk),walk
+
+        if distance_sum > 0: # the direction_node has next_link_end_node
+            next_link = G[direction_node][next_link_end_node]
+            # next_link = G.get_edge_data(direction_node,next_link_end_node)
+            
+            next_link_tuple = tuple()
+            next_link_tuple += (direction_node,)
+            next_link_tuple += (next_link_end_node,)
+            next_link_tuple += (next_link,)
+            # print type(next_link_tuple)
+            # print next_link_tuple
+            walk.append(next_link_tuple)
+            result.append(str(next_link_tuple[2]['type']))
+            # print "walk length: ",len(walk),walk
+        else:
+            break
     # print "path: ",result
     return result  
 
@@ -314,14 +323,17 @@ def main(args):
     print "begin to initialize transition matrix"
     trans_matrix = initialize_edge_type_matrix(args.type_size)
     print trans_matrix
-    print "------begin to read graph---------"
-    G = read_graph(args.input,True,False)
+    print "------begin to read graph---------" 
+    G = read_graph(args.input,args.weighted,args.directed)
     # print G.edges(data=True)
-    # G=nx.barbell_graph(17,1)
-    # draw_graph(G) 
+    # nodes = list(G.nodes)
+    # print G.number_of_edges(),nodes,[n for n in G.neighbors('3')]
+
+    # # G=nx.barbell_graph(17,1)
+    # # draw_graph(G) 
     print "------begin to simulate walk---------"
     for i in range(args.em_iteration):
-        walks = simulate_walks(G,args.num_walks, args.walk_length,trans_matrix)#M step
+        walks = simulate_walks(G,args.num_walks, args.walk_length,trans_matrix,args.directed,args.p,args.q)#M step
         print str(i), "th iteration for Upating transition matrix!"
         trans_matrix = update_trans_matrix(walks,args.type_size,args.e_step)#E step
         print "trans_matrix: ",trans_matrix

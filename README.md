@@ -4,9 +4,9 @@ The open source code for our paper "edge2vec: Learning Node Representation Using
 ## How to use the code
 
 ### Dataset
-The dataset we offer for test is data.csv. The data contains four columns, which refer to Source ID, Target ID, Edge Type, Edge ID. And columns are seperated by comma ','.
+The dataset we offer for test is data.csv. The data contains four columns, which refer to Source ID, Target ID, Edge Type, Edge ID. And columns are seperated by space ' '.
 
-For unweighted graph, please see unweighted_graph.txt. The four columns are Source ID, Target ID, Edge Type, Edge ID. And columns are seperated by comma ','. For weighted graph, please see weighted_graph.txt. The five columns are Source ID, Target ID, Edge Type, Edge Weight, Edge ID. And columns are seperated by comma ','.
+For unweighted graph, please see unweighted_graph.txt. The four columns are Source ID, Target ID, Edge Type, Edge ID. And columns are seperated by space ' '. For weighted graph, please see weighted_graph.txt. The five columns are Source ID, Target ID, Edge Type, Edge Weight, Edge ID. And columns are seperated by space ' '.
 
 ### Run the code
 There are two steps for running the code. 

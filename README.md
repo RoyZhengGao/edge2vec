@@ -29,8 +29,7 @@ Data repository for medical dataset in the link: http://ella.ils.indiana.edu/~ga
 
 if you use the code, please cite:
 
-- Gao, Zheng, Gang Fu, Chunping Ouyang, Satoshi Tsutsui, Xiaozhong Liu, and Ying Ding. "edge2vec: Learning Node Representation Using Edge Semantics." arXiv preprint arXiv:1809.02269 (2018).
-
+- Gao, Zheng, Gang Fu, Chunping Ouyang, Satoshi Tsutsui, Xiaozhong Liu, Jeremy Yang, Christopher Gessner et al. "edge2vec: Representation learning using edge semantics for biomedical knowledge discovery." BMC bioinformatics 20, no. 1 (2019): 306.
 ## License
 The code is released under BSD 3-Clause License. 
 

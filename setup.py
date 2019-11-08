@@ -7,7 +7,7 @@ setuptools.setup(
     url='https://github.com/RoyZhengGao/edge2vec',
     license='BSD 3-Clause License',
     packages=setuptools.find_packages(),
-    python_requires='>=3.6',
+    python_requires='=2.7',
     install_requires=[
         'numpy',
         'pandas',
